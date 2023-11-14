@@ -44,5 +44,15 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD)
 //───────────────────────────────────────
 float4 PS(VS_OUT inData) : SV_Target
 {
-	return g_texture.Sample(g_sampler, inData.uv) * inData.uv.x;
+	//return g_texture.Sample(g_sampler, inData.uv) * inData.uv.x;
+
+	//グレースケールにするための近似値を求める式
+	//output = (2 * output.x + 4 * output.y + output.z) / 7;
+
+	//ポスタリゼーション(階調変換を行う)変換式
+	float lv = 3.0f;
+	float4 output = floor(g_texture.Sample(g_sampler,inData.uv)* lv) / lv;
+
+
+	return output;
 }
