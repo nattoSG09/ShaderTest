@@ -36,6 +36,7 @@ void Stage::Update()
 //•`‰æ
 void Stage::Draw()
 {
+    //- -  Ground  - -//
     static Transform tGround; {
         tGround.position_.y = -1.0f;
         tGround.scale_ = { 10.0f,1.0f,10.0f };
@@ -43,7 +44,9 @@ void Stage::Draw()
     Model::SetTransform(hmGround_, tGround);
     Model::Draw(hmGround_);
 
+    //- -  Arrow  - -//
     static Transform tArrow; {
+        tArrow.scale_ = { 0.5f,0.5f,0.5f };
         tArrow.position_.y = 2.0f;
         tArrow.rotate_.y += 1.0f;
 
@@ -51,6 +54,7 @@ void Stage::Draw()
     Model::SetTransform(hmArrow_, tArrow);
     Model::Draw(hmArrow_);
 
+    //- -  Sphere  - -//
     static Transform tSphere; {
         tSphere.rotate_.y += 1.0f;
     }
