@@ -26,10 +26,14 @@ class Fbx
 
 	struct CONSTANT_BUFFER
 	{
+		XMMATRIX	matW;
 		XMMATRIX	matWVP;
 		XMMATRIX	matNormal;
 		XMFLOAT4	diffuseColor;
 		int			isTextured;
+
+		XMFLOAT4	vecLight;
+		XMFLOAT4	CameraPosition;
 	};
 
 	struct VERTEX
@@ -54,7 +58,7 @@ class Fbx
 	void IntConstantBuffer();
 	void InitMaterial(fbxsdk::FbxNode* pNode);
 public:
-
+	
 	Fbx();
 	HRESULT Load(std::string fileName);
 	void    Draw(Transform& transform);
