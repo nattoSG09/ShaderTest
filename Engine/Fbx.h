@@ -33,7 +33,7 @@ class Fbx
 		int			isTextured;
 
 		XMFLOAT4	vecLight;
-		XMFLOAT4	CameraPosition;
+		XMVECTOR	CameraPosition;
 	};
 
 	struct VERTEX

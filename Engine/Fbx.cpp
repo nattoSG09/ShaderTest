@@ -245,8 +245,8 @@ void Fbx::Draw(Transform& transform)
 		cb.diffuseColor = pMaterialList_[i].diffuse;
 		cb.isTextured = pMaterialList_[i].pTexture != nullptr;
 		cb.matW = XMMatrixTranspose(transform.GetWorldMatrix());
-		cb.vecLight = XMFLOAT4(-2, 0.25f, 0, 0);
-		cb.CameraPosition = Camera::
+		cb.vecLight = XMFLOAT4( 1,5,0,1 );
+		cb.CameraPosition = Camera::GetPosition();
 
 		D3D11_MAPPED_SUBRESOURCE pdata;
 		Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める

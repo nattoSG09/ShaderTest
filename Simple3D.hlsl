@@ -15,6 +15,9 @@ cbuffer global
 	float4x4	matNormal;           // 法線
 	float4		diffuseColor;		//マテリアルの色＝拡散反射係数
 	bool		isTextured;			//テクスチャーが貼られているかどうか
+	
+	float4		vecLight;
+	float4		CameraPosition;
 };
 
 //───────────────────────────────────────
@@ -25,6 +28,7 @@ struct VS_OUT
 	float4 pos  : SV_POSITION;	//位置
 	float2 uv	: TEXCOORD;		//UV座標
 	float4 color	: COLOR;	//色（明るさ）
+	float4 viewDir	:TEXCOORD1;	//視線ベクトル
 };
 
 //───────────────────────────────────────
@@ -40,8 +44,9 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	outData.pos = mul(pos, matWVP);
 	outData.uv = uv;
 
-	normal = mul(normal , matNormal);
-	float4 light = float4(-2, 0.25f, 0, 0);
+	outData.viewDir = normalize(mul(CameraPosition, matW)- mul(pos, matW));
+
+	float4 light = vecLight;
 	light = normalize(light);
 	outData.color = clamp(dot(normal, light), 0, 1);
 
@@ -54,23 +59,24 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 //───────────────────────────────────────
 float4 PS(VS_OUT inData) : SV_Target
 {
-	float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
-	float4 ambentSource = float4(0.2, 0.2, 0.2, 1.0);
-	
-	float4 diffuse;
-	float4 ambient;
-	
+    float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
+    float4 ambientSource = float4(0.2, 0.2, 0.2, 1.0);
 
-	if (isTextured == false)
-	{
-		diffuse = lightSource * diffuseColor * inData.color;
-		ambient = lightSource * diffuseColor * ambentSource;
-	}
-	else
-	{
-		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
-		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambentSource;
-	}
-	
-	return diffuse + ambient;
+    float4 diffuse;
+    float4 ambient;
+    
+
+    if (isTextured == false)
+    {
+        diffuse = lightSource * diffuseColor * inData.color;
+        ambient = lightSource * diffuseColor * ambientSource;
+       
+    }
+    else
+    {
+        diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
+        ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientSource;
+    }
+    
+    return ambient + diffuse;
 }
