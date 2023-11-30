@@ -28,7 +28,6 @@ struct VS_OUT
 	float4 pos  : SV_POSITION;	//位置
 	float2 uv	: TEXCOORD;		//UV座標
 	float4 color	: COLOR;	//色（明るさ）
-	float4 viewDir	:TEXCOORD1;	//視線ベクトル
 };
 
 //───────────────────────────────────────
@@ -44,9 +43,9 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	outData.pos = mul(pos, matWVP);
 	outData.uv = uv;
 
-	outData.viewDir = normalize(mul(CameraPosition, matW)- mul(pos, matW));
+	normal = mul(normal, matNormal);
 
-	float4 light = vecLight;
+	float4 light = float4(1,1,-1,0);
 	light = normalize(light);
 	outData.color = clamp(dot(normal, light), 0, 1);
 
