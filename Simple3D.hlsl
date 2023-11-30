@@ -63,7 +63,7 @@ float4 PS(VS_OUT inData) : SV_Target
 
     float4 diffuse;
     float4 ambient;
-    
+    float4 
 
     if (isTextured == false)
     {
