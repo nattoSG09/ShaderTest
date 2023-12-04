@@ -1,5 +1,8 @@
 #include "Stage.h"
 #include "Engine/Model.h"
+#include "Light.h"
+#include "Global.h"
+#include "Engine/Input.h"
 
 //コンストラクタ
 Stage::Stage(GameObject* parent)
@@ -31,6 +34,17 @@ void Stage::Initialize()
 //更新
 void Stage::Update()
 {
+    XMFLOAT3 lightPos = ConvertXMVECTORToXMFLOAT3(Light::GetPosition());
+
+    if (Input::IsKey(DIK_W))lightPos.y+= 0.1f;
+    if (Input::IsKey(DIK_A))lightPos.x-= 0.1f;
+    if (Input::IsKey(DIK_S))lightPos.y-= 0.1f;
+    if (Input::IsKey(DIK_D))lightPos.x += 0.1f;
+    if (Input::IsKey(DIK_UP))lightPos.z += 0.1f;
+    if (Input::IsKey(DIK_DOWN))lightPos.z-= 0.1f;
+
+    Light::SetPosition(lightPos);
+
 }
 
 //描画

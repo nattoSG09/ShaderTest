@@ -3,6 +3,7 @@
 #include "Direct3D.h"
 #include "Camera.h"
 #include "Texture.h"
+#include "../Light.h"
 
 Fbx::Fbx()
 	:vertexCount_(0), polygonCount_(0), materialCount_(0),
@@ -240,13 +241,14 @@ void Fbx::Draw(Transform& transform)
 	{
 		//コンスタントバッファに情報を渡す
 		CONSTANT_BUFFER cb;
+		cb.matW = XMMatrixTranspose(transform.GetWorldMatrix());
 		cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
 		cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
 		cb.diffuseColor = pMaterialList_[i].diffuse;
+		XMStoreFloat4(&cb.lightPos, Light::GetPosition());
+		XMStoreFloat4(&cb.eyePos,Camera::GetPosition());
+		
 		cb.isTextured = pMaterialList_[i].pTexture != nullptr;
-		cb.matW = XMMatrixTranspose(transform.GetWorldMatrix());
-		cb.vecLight = XMFLOAT4( 1,5,0,1 );
-		cb.CameraPosition = Camera::GetPosition();
 
 		D3D11_MAPPED_SUBRESOURCE pdata;
 		Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める

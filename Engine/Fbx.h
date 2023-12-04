@@ -30,10 +30,9 @@ class Fbx
 		XMMATRIX	matWVP;
 		XMMATRIX	matNormal;
 		XMFLOAT4	diffuseColor;
+		XMFLOAT4	lightPos;
+		XMFLOAT4	eyePos;
 		int			isTextured;
-
-		XMFLOAT4	vecLight;
-		XMVECTOR	CameraPosition;
 	};
 
 	struct VERTEX

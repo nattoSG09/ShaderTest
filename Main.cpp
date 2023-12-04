@@ -6,6 +6,7 @@
 #include "Engine/Input.h"
 #include "Engine/RootJob.h"
 #include "Engine/Model.h"
+#include "Light.h"
 
 #pragma comment(lib, "winmm.lib")
 
@@ -74,6 +75,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 
 	//ƒJƒƒ‰‚Ì‰Šú‰»
 	Camera::Initialize();
+
+	//ƒ‰ƒCƒg‚Ì‰Šú‰»
+	Light::Initialize();
 
 	//DirectInput‚Ì‰Šú‰»
 	Input::Initialize(hWnd);
