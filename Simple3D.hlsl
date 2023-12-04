@@ -52,8 +52,13 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	light = normalize(light);
 
 
-	outData.color = saturate(dot(normal, light));
+	//outData.color = saturate(dot(normal, light));
 	float4 posw = mul(pos, matW);
+	//outData.eyev = eyePos - posw;
+
+	float4 lightDirection = normalize(lightPos - posw);
+
+	outData.color = saturate(dot(normal, lightDirection)); 
 	outData.eyev = eyePos - posw;
 
 	//Ç‹Ç∆ÇﬂÇƒèoóÕ
