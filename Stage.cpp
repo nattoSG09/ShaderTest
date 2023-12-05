@@ -6,7 +6,7 @@
 
 //コンストラクタ
 Stage::Stage(GameObject* parent)
-    :GameObject(parent, "Stage"), hmGround_(-1),hmArrow_(-1),hmSphere_(-1)
+    :GameObject(parent, "Stage"), hmGround_(-1),hmArrow_(-1),hmSphere_(-1), hmLightPos_(-1)
 {
 }
 
@@ -29,6 +29,9 @@ void Stage::Initialize()
     //モデルデータのロード
     hmSphere_ = Model::Load("Assets/ShaderTest/Sphere.fbx");
     assert(hmSphere_ >= 0);
+
+    hmLightPos_ = Model::Load("Assets/ShaderTest/Sphere.fbx");
+    assert(hmSphere_ >= 0);
 }
 
 //更新
@@ -36,12 +39,12 @@ void Stage::Update()
 {
     XMFLOAT3 lightPos = ConvertXMVECTORToXMFLOAT3(Light::GetPosition());
 
-    if (Input::IsKey(DIK_W))lightPos.y+= 0.1f;
+    if (Input::IsKey(DIK_W))lightPos.z+= 0.1f;
     if (Input::IsKey(DIK_A))lightPos.x-= 0.1f;
-    if (Input::IsKey(DIK_S))lightPos.y-= 0.1f;
+    if (Input::IsKey(DIK_S))lightPos.z-= 0.1f;
     if (Input::IsKey(DIK_D))lightPos.x += 0.1f;
-    if (Input::IsKey(DIK_UP))lightPos.z += 0.1f;
-    if (Input::IsKey(DIK_DOWN))lightPos.z-= 0.1f;
+    if (Input::IsKey(DIK_UP))lightPos.y += 0.1f;
+    if (Input::IsKey(DIK_DOWN))lightPos.y-= 0.1f;
 
     Light::SetPosition(lightPos);
 
@@ -74,6 +77,13 @@ void Stage::Draw()
     }
     Model::SetTransform(hmSphere_, tSphere);
     Model::Draw(hmSphere_);
+
+    static Transform tLightPos; {
+        tLightPos.scale_ = { 0.2f,0.2f,0.2f };
+        tLightPos.position_ = ConvertXMVECTORToXMFLOAT3(Light::GetPosition());
+    }
+    Model::SetTransform(hmLightPos_, tLightPos);
+    Model::Draw(hmLightPos_);
 }
 
 //開放

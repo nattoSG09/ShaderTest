@@ -7,6 +7,7 @@ class Stage : public GameObject
     int hmGround_;
     int hmArrow_;
     int hmSphere_;
+    int hmLightPos_;
 public:
     //コンストラクタ
     Stage(GameObject* parent);
