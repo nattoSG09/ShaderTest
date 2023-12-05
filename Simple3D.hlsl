@@ -51,14 +51,14 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	float4 light = normalize(lightPos);
 	light = normalize(light);
 
-	//outData.color = saturate(dot(normal, light));
+	outData.color = saturate(dot(normal, light));
 	float4 posw = mul(pos, matW);
-	//outData.eyev = eyePos - posw;
+	outData.eyev = eyePos - posw;
 
-	float4 lightDirection = normalize(lightPos - posw);
+	/*float4 lightDirection = normalize(lightPos - posw);
 
 	outData.color = saturate(dot(normal, lightDirection)); 
-	outData.eyev = eyePos - posw;
+	outData.eyev = eyePos - posw;*/
 
 	//Ç‹Ç∆ÇﬂÇƒèoóÕ
 	return outData;
@@ -90,5 +90,5 @@ float4 PS(VS_OUT inData) : SV_Target
         ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientSource;
     }
     
-    return ambient + diffuse + specular;
+    return specular/*ambient + diffuse + specular*/;
 }
