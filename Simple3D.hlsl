@@ -74,10 +74,14 @@ float4 PS(VS_OUT inData) : SV_Target
     float4 diffuse;
     float4 ambient;
 
-	float4 NL = saturate(dot(inData.normal, normalize(lightPos)));
+	float4 NL = dot(inData.normal, normalize(lightPos));
 	float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPos));
 	float4 specular = pow(saturate(dot(reflect, normalize(inData.eyev))), 8);
 
+    //float4 NL = dot(inData.light, inData.normal);
+    //float4 R = normalize(2 * NL * inData.normal - inData.light);
+    //specular = pow(saturate(dot(R, normalize(inData.campos))), n) * specularColor;
+	
     if (isTextured == false)
     {
         diffuse = lightSource * diffuseColor * inData.color;
