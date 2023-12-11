@@ -1,6 +1,12 @@
 #pragma once
 #include "Engine/GameObject.h"
 
+struct CBUFF_STAGESCENE
+{
+    XMFLOAT4 lightPosition;
+    XMFLOAT4 eyePosition;
+};
+
 //◆◆◆を管理するクラス
 class Stage : public GameObject
 {
@@ -9,6 +15,12 @@ class Stage : public GameObject
     int hmSphere_;
     int hmLightPos_;
     int hmDonuts_;
+
+    void InitConstantBuffer();
+    XMFLOAT4 lightSourcePosition_;
+
+    ID3D11Buffer* pCBStageScene_;
+
 public:
     //コンストラクタ
     Stage(GameObject* parent);

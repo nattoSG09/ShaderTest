@@ -8,16 +8,21 @@ SamplerState	g_sampler : register(s0);	//サンプラー
 // コンスタントバッファ
 // DirectX 側から送信されてくる、ポリゴン頂点以外の諸情報の定義
 //───────────────────────────────────────
-cbuffer global
+cbuffer gmodel:register(b0)
 {
 	float4x4	matW;
-	float4x4	matWVP;			// ワールド・ビュー・プロジェクションの合成行列
-	float4x4	matNormal;           // 法線
-	float4		diffuseColor;		//マテリアルの色＝拡散反射係数
-	float4		lightPos;
-	float4		eyePos;
-	bool		isTextured;			//テクスチャーが貼られているかどうか
+	float4x4	matWVP;	
+	float4x4	matNormal;
+	float4		diffuseColor;
+	bool		isTextured;
 };
+
+cbuffer gmodel:register(b1)
+{
+	float4		lightPosition;
+	float4		eyePosition;
+};
+
 
 //───────────────────────────────────────
 // 頂点シェーダー出力＆ピクセルシェーダー入力データ構造体
@@ -48,12 +53,12 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	normal = normalize(normal);
 	outData.normal = normal;
 
-	float4 light = normalize(lightPos);
+	float4 light = normalize(lightPosition);
 	light = normalize(light);
 
 	outData.color = saturate(dot(normal, light));
 	float4 posw = mul(pos, matW);
-	outData.eyev = eyePos - posw;
+	outData.eyev = eyePosition - posw;
 
 	//まとめて出力
 	return outData;
@@ -70,9 +75,9 @@ float4 PS(VS_OUT inData) : SV_Target
     float4 ambient;
 
 	//鏡面反射適用処理
-	float4 NL = dot(inData.normal, normalize(lightPos));
-	float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPos));
-	float4 specular = pow(saturate(dot(reflect, normalize(inData.eyev))), 8);
+	float4 NL = dot(inData.normal, normalize(lightPosition));
+	float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPosition));
+	float4 specular = pow(saturate(dot(reflect, normalize(inData.eyev))), 4);
 
     if (isTextured == false)
     {

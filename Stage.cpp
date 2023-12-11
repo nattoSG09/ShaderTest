@@ -4,9 +4,29 @@
 #include "Global.h"
 #include "Engine/Input.h"
 
+void Stage::InitConstantBuffer()
+{
+    D3D11_BUFFER_DESC cb;
+    cb.ByteWidth = sizeof(CBUFF_STAGESCENE);
+    cb.Usage = D3D11_USAGE_DEFAULT;
+    cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    cb.CPUAccessFlags = 0;
+    cb.MiscFlags = 0;
+    cb.StructureByteStride = 0;
+
+    // コンスタントバッファの作成
+    HRESULT hr;
+    hr = Direct3D::pDevice_->CreateBuffer(&cb, nullptr, &pCBStageScene_);
+    if (FAILED(hr))
+    {
+        MessageBox(NULL, "コンスタントバッファの作成に失敗しました", "エラー", MB_OK);
+    }
+}
+
 //コンストラクタ
 Stage::Stage(GameObject* parent)
-    :GameObject(parent, "Stage"), hmGround_(-1),hmArrow_(-1),hmSphere_(-1), hmLightPos_(-1), hmDonuts_(-1)
+    :GameObject(parent, "Stage"), hmGround_(-1),hmArrow_(-1),hmSphere_(-1), hmLightPos_(-1), hmDonuts_(-1),
+    lightSourcePosition_(ConvertXMVECTORToXMFLOAT4(Light::GetPosition()))
 {
 }
 
@@ -35,6 +55,8 @@ void Stage::Initialize()
 
     hmDonuts_ = Model::Load("Assets/ShaderTest/donuts.fbx");
     assert(hmDonuts_ >= 0);
+
+    InitConstantBuffer();
 }
 
 //更新
@@ -50,6 +72,13 @@ void Stage::Update()
     if (Input::IsKey(DIK_DOWN))lightPos.y-= 0.1f;
 
     Light::SetPosition(lightPos);
+
+    CBUFF_STAGESCENE cb;
+    cb.lightPosition = ConvertXMVECTORToXMFLOAT4(Light::GetPosition());
+    Direct3D::pContext_->UpdateSubresource(pCBStageScene_, 0, NULL, &cb, 0, 0);
+
+    Direct3D::pContext_->VSSetConstantBuffers(1, 1, &pCBStageScene_);	//頂点シェーダー用	
+    Direct3D::pContext_->PSSetConstantBuffers(1, 1, &pCBStageScene_);	//ピクセルシェーダー用
 
 }
 
