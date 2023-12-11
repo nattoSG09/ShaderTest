@@ -37,3 +37,8 @@ XMVECTOR ConvertXMFLOAT4ToXMVECTOR(const XMFLOAT4& float4Vector) {
     // XMFLOAT4‚©‚çXMVECTOR‚Ö‚Ì•ÏŠ·
     return XMLoadFloat4(&float4Vector);
 }
+
+XMVECTOR ConvertXMFLOAT3ToXMVECTOR(const XMFLOAT3& float3Vector) {
+    // XMFLOAT4‚©‚çXMVECTOR‚Ö‚Ì•ÏŠ·
+    return XMLoadFloat3(&float3Vector);
+}
