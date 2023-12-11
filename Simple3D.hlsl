@@ -55,11 +55,6 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	float4 posw = mul(pos, matW);
 	outData.eyev = eyePos - posw;
 
-	/*float4 lightDirection = normalize(lightPos - posw);
-
-	outData.color = saturate(dot(normal, lightDirection)); 
-	outData.eyev = eyePos - posw;*/
-
 	//Ç‹Ç∆ÇﬂÇƒèoóÕ
 	return outData;
 }
@@ -74,14 +69,11 @@ float4 PS(VS_OUT inData) : SV_Target
     float4 diffuse;
     float4 ambient;
 
+	//ãæñ îΩéÀìKópèàóù
 	float4 NL = dot(inData.normal, normalize(lightPos));
 	float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPos));
 	float4 specular = pow(saturate(dot(reflect, normalize(inData.eyev))), 8);
 
-    //float4 NL = dot(inData.light, inData.normal);
-    //float4 R = normalize(2 * NL * inData.normal - inData.light);
-    //specular = pow(saturate(dot(R, normalize(inData.campos))), n) * specularColor;
-	
     if (isTextured == false)
     {
         diffuse = lightSource * diffuseColor * inData.color;
