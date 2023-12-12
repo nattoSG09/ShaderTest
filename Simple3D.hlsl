@@ -10,11 +10,11 @@ SamplerState	g_sampler : register(s0);	//サンプラー
 //───────────────────────────────────────
 cbuffer gmodel:register(b0)
 {
-	float4x4	matW;
-	float4x4	matWVP;	
-	float4x4	matNormal;
-	float4		diffuseColor;
-	bool		isTextured;
+	float4x4	matW;			//ワールド行列
+	float4x4	matWVP;			//ワールドビュープロジェクション行列
+	float4x4	matNormal;		//ノーマル
+	float4		diffuseColor;	//色
+	bool		isTextured;		//テクスチャの有無
 };
 
 cbuffer gmodel:register(b1)
@@ -44,18 +44,24 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	//ピクセルシェーダーへ渡す情報
 	VS_OUT outData;
 
-	//ローカル座標に、ワールド・ビュー・プロジェクション行列をかけて
-	//スクリーン座標に変換し、ピクセルシェーダーへ
+	// ローカル座標に、ワールド・ビュー・プロジェクション行列をかけて
+	// スクリーン座標に変換し、ピクセルシェーダーへ
 	outData.pos = mul(pos, matWVP);
+	
+	// そのまま
 	outData.uv = uv;
+
+	// ｗには０をいれて法線情報を渡す
 	normal.w = 0;
 	normal = mul(normal, matNormal);
 	normal = normalize(normal);
 	outData.normal = normal;
 
+	// ライトポジションから原点へ向かう方向ベクトルを生成する
 	float4 light = normalize(lightPosition);
 	light = normalize(light);
 
+	// ワールド座標をかけた頂点とカメラ位置を結んだ視線ベクトルを作成
 	outData.color = saturate(dot(normal, light));
 	float4 posw = mul(pos, matW);
 	outData.eyev = eyePosition - posw;
@@ -91,5 +97,5 @@ float4 PS(VS_OUT inData) : SV_Target
         ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientSource;
     }
     
-    return specular+ ambient + diffuse ;
+    return  ambient + diffuse + specular;
 }
