@@ -23,7 +23,6 @@ cbuffer gmodel:register(b1)
 	float4		eyePosition;
 };
 
-
 //───────────────────────────────────────
 // 頂点シェーダー出力＆ピクセルシェーダー入力データ構造体
 //───────────────────────────────────────
@@ -59,8 +58,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 
 	// ライトポジションから原点へ向かう方向ベクトルを生成する
 	float4 light = normalize(lightPosition);
-	light = normalize(light);
-
+	
 	// ワールド座標をかけた頂点とカメラ位置を結んだ視線ベクトルを作成
 	outData.color = saturate(dot(normal, light));
 	float4 posw = mul(pos, matW);
@@ -75,15 +73,16 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 //───────────────────────────────────────
 float4 PS(VS_OUT inData) : SV_Target
 {
-    float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
-    float4 ambientSource = float4(0.2, 0.2, 0.2, 1.0);
+    float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);	//入射光の強さ & 色	Iin
+    float4 ambientSource = float4(0.2, 0.2, 0.2, 1.0);	//環境光係数		Ka
     float4 diffuse;
     float4 ambient;
 
 	//鏡面反射適用処理
 	float4 NL = dot(inData.normal, normalize(lightPosition));
-	float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPosition));
-	float4 specular = pow(saturate(dot(reflect, normalize(inData.eyev))), 4);
+	//float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPosition));
+	float4 r = reflect(normalize(-lightPosition), inData.normal);
+	float4 specular = pow(saturate(dot(r, normalize(inData.eyev))), 4);
 
     if (isTextured == false)
     {
@@ -97,5 +96,5 @@ float4 PS(VS_OUT inData) : SV_Target
         ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientSource;
     }
     
-    return  ambient + diffuse + specular;
+    return  /*ambient + diffuse + *//*specular*/specular;
 }

@@ -74,7 +74,7 @@ void Stage::Update()
     Light::SetPosition(lightPos);
 
     CBUFF_STAGESCENE cb;
-    cb.lightPosition = XMFLOAT4(lightPos.x+1,lightPos.y+1,lightPos.z,0);
+    cb.lightPosition = XMFLOAT4(lightPos.x,lightPos.y,lightPos.z,0);
     Direct3D::pContext_->UpdateSubresource(pCBStageScene_, 0, NULL, &cb, 0, 0);
 
     Direct3D::pContext_->VSSetConstantBuffers(1, 1, &pCBStageScene_);	//頂点シェーダー用	
