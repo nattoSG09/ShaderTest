@@ -8,7 +8,7 @@ namespace Light
 
 void Light::Initialize()
 {
-	position_ = XMVectorSet(0, 0, 1, 0);
+	position_ = XMVectorSet(0, 0, -1, 0);
 }
 
 void Light::SetPosition(XMVECTOR position)
