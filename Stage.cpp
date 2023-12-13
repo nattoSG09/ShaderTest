@@ -3,6 +3,7 @@
 #include "Light.h"
 #include "Global.h"
 #include "Engine/Input.h"
+#include "Engine/Camera.h"
 
 void Stage::InitConstantBuffer()
 {
@@ -75,6 +76,7 @@ void Stage::Update()
 
     CBUFF_STAGESCENE cb;
     cb.lightPosition = XMFLOAT4(lightPos.x,lightPos.y,lightPos.z,0);
+    cb.eyePosition = ConvertXMVECTORToXMFLOAT4(Camera::GetPosition());
     Direct3D::pContext_->UpdateSubresource(pCBStageScene_, 0, NULL, &cb, 0, 0);
 
     Direct3D::pContext_->VSSetConstantBuffers(1, 1, &pCBStageScene_);	//頂点シェーダー用	
