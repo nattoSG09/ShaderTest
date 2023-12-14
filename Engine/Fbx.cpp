@@ -194,15 +194,21 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 	{
 		//i番目のマテリアル情報を取得
 		FbxSurfacePhong* pMaterial = (FbxSurfacePhong*)pNode->GetMaterial(i);
+		
 		FbxDouble3 diffuse =  pMaterial->Diffuse;
-		FbxDouble3 ambient = pMaterial->Ambient;
 		pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1],(float)diffuse[2], 1.0f);
+		
+		FbxDouble3 ambient = pMaterial->Ambient;
 		pMaterialList_[i].ambient = XMFLOAT4((float)ambient[0], (float)ambient[1], (float)ambient[2], 1.0f);
-
+		
+		
+		pMaterialList_[i].specular = XMFLOAT4(0, 0, 0, 0);
+		pMaterialList_[i].shininess = 1.0f;
 		if (pMaterial->GetClassId().Is(FbxSurfacePhong::ClassId)) {
 			FbxDouble3 specular = pMaterial->Specular;
-			FbxDouble shininess = pMaterial->Shininess;
 			pMaterialList_[i].specular = XMFLOAT4((float)specular[0], (float)specular[1], (float)specular[2], 1.0f);
+			
+			FbxDouble shininess = pMaterial->Shininess;
 			pMaterialList_[i].shininess = (float)shininess;
 		}
 		pMaterialList_[i].pTexture = nullptr;
@@ -248,8 +254,11 @@ void Fbx::Draw(Transform& transform)
 		cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
 		cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
 		cb.diffuseColor = pMaterialList_[i].diffuse;
+		cb.ambientColor = pMaterialList_[i].ambient;
+		cb.specularColor = pMaterialList_[i].specular;
+		cb.shininess = pMaterialList_[i].shininess;
 		cb.isTextured = pMaterialList_[i].pTexture != nullptr;
-
+		
 
 		D3D11_MAPPED_SUBRESOURCE pdata;
 		Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める

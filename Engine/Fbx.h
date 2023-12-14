@@ -33,6 +33,9 @@ class Fbx
 		XMMATRIX	matWVP;			//ワールドビュープロジェクション行列
 		XMMATRIX	matNormal;		//ノーマル
 		XMFLOAT4	diffuseColor;	//色
+		XMFLOAT4	ambientColor;	//色
+		XMFLOAT4	specularColor;	//色
+		float		shininess;
 		int			isTextured;		//テクスチャの有無
 	};
 
