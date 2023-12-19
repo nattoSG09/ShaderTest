@@ -122,6 +122,7 @@ void Stage::Draw()
 
     //- -  Donuts  - -//
     static Transform tDonuts; {
+        tDonuts.rotate_.y +=0.2f;
     }
     Model::SetTransform(hmDonuts_, tDonuts);
     Model::Draw(hmDonuts_);

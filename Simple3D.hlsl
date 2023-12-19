@@ -92,14 +92,12 @@ float4 PS(VS_OUT inData) : SV_Target
 	float4 r = reflect(normalize(-lightPosition), inData.normal);
 	float4 specular = pow(saturate(dot(r, normalize(inData.eyev))), shininess) * specularColor;
 
-	/*float lv = 3.0f;
-	inData.color = floor(inData.color * lv) / lv;*/
 
 	float2 uv;
 	uv.x = inData.color.x;
 	uv.y = 0.f;
 
-	return g_toon_texture.Sample(g_sampler, uv);
+	float4 t1 =  g_toon_texture.Sample(g_sampler, uv);
 	
 	////ifでの先生の階調化
 	//{
@@ -117,31 +115,30 @@ float4 PS(VS_OUT inData) : SV_Target
 	//}
 	//
 
-    /*if (isTextured == false)
-    {
-        diffuse = lightSource * diffuseColor * inData.color;
-        ambient = lightSource * diffuseColor * ambientColor;
-    }
-    else
-    {
-        diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
-        ambient = (lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientColor);
-    }
-*/
-	
 	if (isTextured == false)
 	{
-		diffuse = lightSource * diffuseColor * inData.color;
+		diffuse = lightSource * diffuseColor * t1;
 		ambient = lightSource * diffuseColor * ambientColor;
 	}
 	else
 	{
-		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
+		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) *t1;
 		ambient = (lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientColor);
 	}
 
+	//視線ベクトルと面の法線の角度が９０度付近なら...
+	float d = abs(dot(normalize(inData.eyev), inData.normal));
+
+	uv.y = d;
+	return g_toon_texture.Sample(g_sampler, uv);
+	if (abs(d) < 0.2f) {
+		return float4(0, 0, 0, 0);
+	}
+	else {
+		return float4(1, 1, 1, 0);
+	}
 
 	//return inData.color;
-	return diffuse + ambient;
-    return  ambient + diffuse + specular;
+	//return diffuse + ambient;
+    //return  ambient + diffuse + specular;
 }
