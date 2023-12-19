@@ -52,7 +52,5 @@ float4 PS(VS_OUT inData) : SV_Target
 	//ポスタリゼーション(階調変換を行う)変換式
 	float lv = 3.0f;
 	float4 output = floor(g_texture.Sample(g_sampler,inData.uv)* lv) / lv;
-
-
 	return output;
 }
