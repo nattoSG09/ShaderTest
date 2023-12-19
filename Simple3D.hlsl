@@ -4,6 +4,9 @@
 Texture2D		g_texture : register(t0);	//テクスチャー
 SamplerState	g_sampler : register(s0);	//サンプラー
 
+Texture2D		g_toon_texture : register(t1);	//テクスチャー
+
+
 //───────────────────────────────────────
 // コンスタントバッファ
 // DirectX 側から送信されてくる、ポリゴン頂点以外の諸情報の定義
@@ -89,9 +92,15 @@ float4 PS(VS_OUT inData) : SV_Target
 	float4 r = reflect(normalize(-lightPosition), inData.normal);
 	float4 specular = pow(saturate(dot(r, normalize(inData.eyev))), shininess) * specularColor;
 
-	float lv = 3.0f;
-	inData.color = floor(inData.color * lv) / lv;
+	/*float lv = 3.0f;
+	inData.color = floor(inData.color * lv) / lv;*/
 
+	float2 uv;
+	uv.x = inData.color.x;
+	uv.y = 0.f;
+
+	return g_toon_texture.Sample(g_sampler, uv);
+	
 	////ifでの先生の階調化
 	//{
 	//	float4 nk;
@@ -108,7 +117,7 @@ float4 PS(VS_OUT inData) : SV_Target
 	//}
 	//
 
-    if (isTextured == false)
+    /*if (isTextured == false)
     {
         diffuse = lightSource * diffuseColor * inData.color;
         ambient = lightSource * diffuseColor * ambientColor;
@@ -118,8 +127,21 @@ float4 PS(VS_OUT inData) : SV_Target
         diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
         ambient = (lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientColor);
     }
+*/
+	
+	if (isTextured == false)
+	{
+		diffuse = lightSource * diffuseColor * inData.color;
+		ambient = lightSource * diffuseColor * ambientColor;
+	}
+	else
+	{
+		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
+		ambient = (lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientColor);
+	}
 
-	return inData.color;
-	return diffuse;
+
+	//return inData.color;
+	return diffuse + ambient;
     return  ambient + diffuse + specular;
 }
