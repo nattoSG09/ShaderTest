@@ -81,13 +81,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 //───────────────────────────────────────
 float4 PS(VS_OUT inData) : SV_Target
 {
-    //return float4(1,1,1,0);
-    float2 uv;
-    uv.x = inData.color.x;
-    uv.y = 0.f;
-
-
-
+   
     //視線ベクトルと面の法線の角度が９０度付近なら...
     float d = abs(dot(normalize(inData.eyev), inData.normal));
     if (abs(d) < 0.25f)
