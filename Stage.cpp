@@ -125,6 +125,7 @@ void Stage::Draw()
 
     //- -  Donuts  - -//
     static Transform tDonuts; {
+        tDonuts.scale_ = { 1.5f,1.5f, 1.5f };
         tDonuts.rotate_.y += 0.2f;
         tDonuts.rotate_.z +=0.2f;
     }

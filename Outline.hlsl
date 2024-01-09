@@ -90,9 +90,8 @@ float4 PS(VS_OUT inData) : SV_Target
 
     //視線ベクトルと面の法線の角度が９０度付近なら...
     float d = abs(dot(normalize(inData.eyev), inData.normal));
-    if (abs(d) < 0.25f) {
-        return float4(1, 1, 1, 1);
-    }
+    if (abs(d) < 0.25f)
+        return float4(1, 1, 0.5, 1);
     else
-    return float4(0,0,0, 1);
+        return float4(0, 0, 0, 1);
 }
