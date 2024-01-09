@@ -133,7 +133,8 @@ void Stage::Draw()
 
     Direct3D::SetShader(SHADER_OUTLINE);
     Model::Draw(hmDonuts_);
-    //Direct3D::SetShader(SHADER_TOON);
+
+    Direct3D::SetShader(SHADER_TOON);
     Model::Draw(hmDonuts_);
 
 }

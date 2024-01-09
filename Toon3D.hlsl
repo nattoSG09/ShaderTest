@@ -107,6 +107,6 @@ float4 PS(VS_OUT inData) : SV_Target
     }
 
     //return inData.color;
-    return float4(1,1,1,0);
+    return float4(0,1,0,0);
     //return  ambient + diffuse + specular;
 }
