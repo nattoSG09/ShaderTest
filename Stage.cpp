@@ -54,7 +54,7 @@ void Stage::Initialize()
     hmLightPos_ = Model::Load("Assets/ShaderTest/Sphere.fbx");
     assert(hmLightPos_ >= 0);
 
-    hmDonuts_ = Model::Load("Assets/ShaderTest/donuts.fbx");
+    hmDonuts_ = Model::Load("Assets/BoxCollider.fbx");
     assert(hmDonuts_ >= 0);
 
     InitConstantBuffer();
@@ -87,29 +87,32 @@ void Stage::Update()
 //•`‰æ
 void Stage::Draw()
 {
+
+   // Direct3D::SetShader(SHADER_TOON);
+
     //- -  Ground  - -//
-    static Transform tGround; {
-        tGround.position_.y = -1.0f;
-        tGround.scale_ = { 10.0f,1.0f,10.0f };
-    }
-    Model::SetTransform(hmGround_, tGround);
-    //Model::Draw(hmGround_);
+   // static Transform tGround; {
+   //     tGround.position_.y = -1.0f;
+   //     tGround.scale_ = { 10.0f,1.0f,10.0f };
+   // }
+   // Model::SetTransform(hmGround_, tGround);
+   // //Model::Draw(hmGround_);
 
-    //- -  Arrow  - -//
-    static Transform tArrow; {
-        tArrow.scale_ = { 0.5f,0.5f,0.5f };
-        tArrow.position_.y = 2.0f;
-        tArrow.rotate_.y += 1.0f;
+   // //- -  Arrow  - -//
+   // static Transform tArrow; {
+   //     tArrow.scale_ = { 0.5f,0.5f,0.5f };
+   //     tArrow.position_.y = 2.0f;
+   //     tArrow.rotate_.y += 1.0f;
 
-    }
-    Model::SetTransform(hmArrow_, tArrow);
-    //Model::Draw(hmArrow_);
+   // }
+   // Model::SetTransform(hmArrow_, tArrow);
+   //// Model::Draw(hmArrow_);
 
-    //- -  Sphere  - -//
-    static Transform tSphere; {
-        tSphere.rotate_.y += 1.0f;
-    }
-    Model::SetTransform(hmSphere_, tSphere);
+   // //- -  Sphere  - -//
+   // static Transform tSphere; {
+   //     tSphere.rotate_.y += 1.0f;
+   // }
+   // Model::SetTransform(hmSphere_, tSphere);
     //Model::Draw(hmSphere_);
 
     //- -  Light  - -//
@@ -118,14 +121,20 @@ void Stage::Draw()
         tLightPos.position_ = ConvertXMVECTORToXMFLOAT3(Light::GetPosition());
     }
     Model::SetTransform(hmLightPos_, tLightPos);
-    Model::Draw(hmLightPos_);
+    //Model::Draw(hmLightPos_);
 
     //- -  Donuts  - -//
     static Transform tDonuts; {
-        tDonuts.rotate_.y +=0.2f;
+        tDonuts.rotate_.y += 0.2f;
+        tDonuts.rotate_.z +=0.2f;
     }
     Model::SetTransform(hmDonuts_, tDonuts);
+
+    Direct3D::SetShader(SHADER_OUTLINE);
     Model::Draw(hmDonuts_);
+    //Direct3D::SetShader(SHADER_TOON);
+    Model::Draw(hmDonuts_);
+
 }
 
 //ŠJ•ú

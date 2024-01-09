@@ -79,66 +79,22 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 //───────────────────────────────────────
 float4 PS(VS_OUT inData) : SV_Target
 {
-	// toonShaderやる
-
-    float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);	//入射光の強さ & 色	Iin
-    //float4 ambientSource = float4(0.2, 0.2, 0.2, 1.0);	//環境光係数		Ka
-    float4 diffuse;
-    float4 ambient;
-
-	//鏡面反射適用処理
-	//float4 NL = dot(inData.normal, normalize(lightPosition));
-	//float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPosition));
-	float4 r = reflect(normalize(-lightPosition), inData.normal);
-	float4 specular = pow(saturate(dot(r, normalize(inData.eyev))), shininess) * specularColor;
-
-
-	float2 uv;
-	uv.x = inData.color.x;
-	uv.y = 0.f;
-
-	float4 t1 =  g_toon_texture.Sample(g_sampler, uv);
-	
-	////ifでの先生の階調化
-	//{
-	//	float4 nk;
-	//	if (inData.color.x < 1 / 3.0f) {
-	//		nk = float4(0.1f, 0.1f, 0.1f, 1.0f);
-	//	}
-	//	else if (inData.color.x < 2 / 3.0f) {
-	//		nk = float4(0.5f, 0.5f, 0.5f, 1.0f);
-	//	}
-	//	else if (inData.color.x < 1.0f) {
-	//		nk = float4(1.0f, 1.0f, 1.0f, 1.0f);
-	//	}
-	//	return nk;
-	//}
-	//
-
+	float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
+	float4 ambentSource = float4(0.2, 0.2, 0.2, 1.0);
+	float4 diffuse;
+	float4 ambient;
 	if (isTextured == false)
 	{
-		diffuse = lightSource * diffuseColor * t1;
-		ambient = lightSource * diffuseColor * ambientColor;
+		diffuse = lightSource * diffuseColor * inData.color;
+		ambient = lightSource * diffuseColor * ambentSource;
 	}
 	else
 	{
-		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) *t1;
-		ambient = (lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientColor);
+		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
+		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambentSource;
 	}
-
-	//視線ベクトルと面の法線の角度が９０度付近なら...
-	float d = abs(dot(normalize(inData.eyev), inData.normal));
-
-	uv.y = d;
-	return g_toon_texture.Sample(g_sampler, uv);
-	if (abs(d) < 0.2f) {
-		return float4(0, 0, 0, 0);
-	}
-	else {
-		return float4(1, 1, 1, 0);
-	}
-
-	//return inData.color;
-	//return diffuse + ambient;
-    //return  ambient + diffuse + specular;
+	//return g_texture.Sample(g_sampler, inData.uv);// (diffuse + ambient);]
+	//float4 diffuse = lightSource * inData.color;
+	//float4 ambient = lightSource * ambentSource;
+	return diffuse + ambient;
 }
