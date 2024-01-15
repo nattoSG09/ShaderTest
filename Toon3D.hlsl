@@ -79,34 +79,43 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 //───────────────────────────────────────
 float4 PS(VS_OUT inData) : SV_Target
 {
-    // toonShaderやる
+	// toonShaderやる
 
-    float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);    //入射光の強さ & 色    Iin
-    float4 diffuse;
-    float4 ambient;
+	 float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);	//入射光の強さ & 色	Iin
+	 float4 diffuse;
+	 float4 ambient;
 
-    float4 r = reflect(normalize(-lightPosition), inData.normal);
-    float4 specular = pow(saturate(dot(r, normalize(inData.eyev))), shininess) * specularColor;
+	 float4 r = reflect(normalize(-lightPosition), inData.normal);
+	 float4 specular = pow(saturate(dot(r, normalize(inData.eyev))), shininess) * specularColor;
+
+	 float2 uv;
+	 uv.x = inData.color.x;
+	 uv.y = 0.f;
+
+	 float4 t1 = g_toon_texture.Sample(g_sampler, uv);
+
+	 if (isTextured == false)
+	 {
+		 diffuse = lightSource * diffuseColor * t1;
+		 ambient = lightSource * diffuseColor * ambientColor;
+	 }
+	 else
+	 {
+		 diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * t1;
+		 ambient = (lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientColor);
+	 }
+
+	 //視線ベクトルと面の法線の角度が９０度付近なら...
+	 float d = abs(dot(normalize(inData.eyev), inData.normal));
 
 
-    float2 uv;
-    uv.x = inData.color.x;
-    uv.y = 0.f;
+	 uv.y = d;
+	 //return g_toon_texture.Sample(g_sampler, uv);
+	 if (abs(d) < 0.1f) {
+		 return float4(0, 1, 0, 0);
+	 }
+	 else {
+		 return (diffuse + ambient) * 2;
+	 }
 
-    float4 t1 = g_toon_texture.Sample(g_sampler, uv);
-    
-    if (isTextured == false)
-    {
-        diffuse = lightSource * diffuseColor * t1;
-        ambient = lightSource * diffuseColor * ambientColor;
-    }
-    else
-    {
-        diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * t1;
-        ambient = (lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientColor);
-    }
-
-    //return inData.color;
-    return float4(1,1,1,0);
-    //return  ambient + diffuse + specular;
 }
