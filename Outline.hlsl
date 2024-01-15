@@ -47,52 +47,21 @@ struct VS_OUT
 VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 {
     //ピクセルシェーダーへ渡す情報
-    VS_OUT outData;
-
-    // ローカル座標に、ワールド・ビュー・プロジェクション行列をかけて
-    // スクリーン座標に変換し、ピクセルシェーダーへ
-    pos = pos + normal * 0.05f;
+    VS_OUT outData = (VS_OUT)0;
+    //ローカル座標に、ワールド・ビュー・プロジェクション行列をかけて
+    //スクリーン座標に変換し、ピクセルシェーダーへ
+    normal.w = 0;// 0いれとくとバグとかが少ない
+    pos = pos + normal * 0.05;
     outData.pos = mul(pos, matWVP);
-
-    // そのまま
-    outData.uv = uv;
-
-    // ｗには０をいれて法線情報を渡す
-    normal.w = 0;
-    normal = mul(normal, matNormal);
-    normal = normalize(normal);
-    outData.normal = normal;
-
-    // ライトポジションから原点へ向かう方向ベクトルを生成する
-    float4 light = normalize(lightPosition);
-
-    // ワールド座標をかけた頂点とカメラ位置を結んだ視線ベクトルを作成
-    outData.color = saturate(dot(normal, light));
-    float4 posw = mul(pos, matW);
-    outData.eyev = eyePosition - posw;
 
     //まとめて出力
     return outData;
 }
-
 
 //───────────────────────────────────────
 // ピクセルシェーダ
 //───────────────────────────────────────
 float4 PS(VS_OUT inData) : SV_Target
 {
-    //return float4(1,1,1,0);
-    float2 uv;
-    uv.x = inData.color.x;
-    uv.y = 0.f;
-
-
-
-    //視線ベクトルと面の法線の角度が９０度付近なら...
-    float d = abs(dot(normalize(inData.eyev), inData.normal));
-    if (abs(d) < 0.25f) {
-        return float4(1, 1, 1, 1);
-    }
-    else
-    return float4(0,0,0, 1);
+      return float4(0,0,0,0);
 }

@@ -54,7 +54,7 @@ void Stage::Initialize()
     hmLightPos_ = Model::Load("Assets/ShaderTest/Sphere.fbx");
     assert(hmLightPos_ >= 0);
 
-    hmDonuts_ = Model::Load("Assets/BoxCollider.fbx");
+    hmDonuts_ = Model::Load("Assets/ShaderTest/donuts.fbx");
     assert(hmDonuts_ >= 0);
 
     InitConstantBuffer();
