@@ -100,12 +100,23 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 	for (int i = 0; i < polygonCount_; i++) {
 		// ポリゴンのインデックスを取得
 		int sIndex = mesh->GetPolygonVertexIndex(i);
+
 		FbxGeometryElementTangent* pTangent = mesh->GetElementTangent(0);
-		FbxVector4 tangent = pTangent->GetDirectArray().GetAt(sIndex).mData;
-		for (int j = 0; j < 3; j++) {
-			int index = mesh->GetPolygonVertices()[sIndex + j];
-			vertices[index].tangent = XMVectorSet((float)tangent[0], (float)tangent[1], (float)tangent[2], (float)tangent[3]);
+
+		if (pTangent != nullptr) {
+			FbxVector4 tangent = pTangent->GetDirectArray().GetAt(sIndex).mData;
+			for (int j = 0; j < 3; j++) {
+				int index = mesh->GetPolygonVertices()[sIndex + j];
+				vertices[index].tangent = XMVectorSet((float)tangent[0], (float)tangent[1], (float)tangent[2], (float)tangent[3]);
+			}
 		}
+		else {
+			for (int j = 0; j < 3; j++) {
+				int index = mesh->GetPolygonVertices()[sIndex + j];
+				vertices[index].tangent = XMVectorSet(0,0,0,0);
+			}
+		}
+		
 	}
 
 	//頂点バッファ
