@@ -38,6 +38,7 @@ class Fbx
 		XMFLOAT4	specularColor;	//色
 		float		shininess;
 		int			isTextured;		//テクスチャの有無
+		bool		isNormalTexture;
 	};
 
 	struct VERTEX
