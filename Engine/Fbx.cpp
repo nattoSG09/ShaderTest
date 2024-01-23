@@ -97,26 +97,20 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 		}
 	}
 
+	// タンジェントを取得
+	FbxGeometryElementTangent* t = mesh->GetElementTangent(0);
 	for (int i = 0; i < polygonCount_; i++) {
-		// ポリゴンのインデックスを取得
-		int sIndex = mesh->GetPolygonVertexIndex(i);
+		int startIndex = mesh->GetPolygonVertexIndex(i);
 
-		FbxGeometryElementTangent* pTangent = mesh->GetElementTangent(0);
+		FbxVector4 tangent{ 0,0,0,0 };
+		if (t) {
+			tangent = t->GetDirectArray().GetAt(startIndex).mData;
+		}
 
-		if (pTangent != nullptr) {
-			FbxVector4 tangent = pTangent->GetDirectArray().GetAt(sIndex).mData;
-			for (int j = 0; j < 3; j++) {
-				int index = mesh->GetPolygonVertices()[sIndex + j];
-				vertices[index].tangent = XMVectorSet((float)tangent[0], (float)tangent[1], (float)tangent[2], (float)tangent[3]);
-			}
+		for (int j = 0; j < 3; j++) {
+			int index = mesh->GetPolygonVertices()[startIndex + j];
+			vertices[index].tangent = XMVectorSet((float)tangent[0], (float)tangent[1], (float)tangent[2], 0.f);
 		}
-		else {
-			for (int j = 0; j < 3; j++) {
-				int index = mesh->GetPolygonVertices()[sIndex + j];
-				vertices[index].tangent = XMVectorSet(0,0,0,0);
-			}
-		}
-		
 	}
 
 	//頂点バッファ
@@ -351,16 +345,9 @@ void Fbx::Draw(Transform& transform)
 
 		if (pMaterialList_[i].pNormalTexture)
 		{
-			ID3D11SamplerState* pSampler = pMaterialList_[i].pNormalTexture->GetSampler();
-			Direct3D::pContext_->PSSetSamplers(1, 1, &pSampler);
-
 			ID3D11ShaderResourceView* pSRV = pMaterialList_[i].pNormalTexture->GetSRV();
 			Direct3D::pContext_->PSSetShaderResources(1, 1, &pSRV);
 		}
-
-		//ID3D11ShaderResourceView* pSRVToon = pToonTex_->GetSRV();
-		//Direct3D::pContext_->PSSetShaderResources(1, 1, &pSRVToon);
-
 
 		//描画
 		Direct3D::pContext_->DrawIndexed(indexCount_[i], 0, 0);
