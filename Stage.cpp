@@ -39,7 +39,7 @@ Stage::~Stage()
 //‰Šú‰»
 void Stage::Initialize()
 {
-    hmDonuts_ = Model::Load("Assets/download/Torus.fbx");
+    hmDonuts_ = Model::Load("Assets/download/Ball.fbx");
     assert(hmDonuts_ >= 0);
 
     InitConstantBuffer();
