@@ -135,6 +135,8 @@ float4 PS(VS_OUT inData) : SV_Target
 			ambient = diffuseColor * ambientColor;
 		}
         float4 result = diffuse + ambient + specular;
+		if (hasTexture)
+			result.a = inData.uv.x;
         return result;
     }
 	else

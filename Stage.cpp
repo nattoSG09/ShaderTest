@@ -39,7 +39,7 @@ Stage::~Stage()
 //‰Šú‰»
 void Stage::Initialize()
 {
-    hmDonuts_ = Model::Load("Assets/download/Torus.fbx");
+    hmDonuts_ = Model::Load("Assets/download/Ball.fbx");
     assert(hmDonuts_ >= 0);
 
     InitConstantBuffer();
@@ -75,7 +75,8 @@ void Stage::Draw()
     //- -  Donuts  - -//
     static Transform tDonuts; {
         tDonuts.rotate_.y += 0.2f;
-        tDonuts.rotate_.z +=0.2f;
+        tDonuts.rotate_.z += 0.2f;
+        tDonuts.scale_ = { 2.f,2.f,2.f };
     }
     Model::SetTransform(hmDonuts_, tDonuts);
 
