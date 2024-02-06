@@ -39,6 +39,8 @@ class Fbx
 		FLOAT		shininess;
 		BOOL		isTextured;		//テクスチャの有無
 		BOOL		isNormalTexture;
+		float		scrollx;
+		float		scrolly;
 	};
 
 	struct VERTEX
@@ -48,6 +50,7 @@ class Fbx
 		XMVECTOR normal; //法線ベクトル
 		XMVECTOR tangent;// 接線
 	};
+
 
 	int vertexCount_;	//頂点数
 	int polygonCount_;	//ポリゴン数
@@ -66,6 +69,7 @@ class Fbx
 
 	Texture* pToonTex_;
 public:
+	float scrollVal_;
 	
 	Fbx();
 	HRESULT Load(std::string fileName);

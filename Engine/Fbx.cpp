@@ -311,6 +311,13 @@ void Fbx::Draw(Transform& transform)
 		cb.isTextured = pMaterialList_[i].pTexture != nullptr;
 		cb.isNormalTexture = pMaterialList_[i].pNormalTexture != nullptr;
 
+		scrollVal_ += 0.001f;
+		cb.scrollx = cos(scrollVal_);
+
+		static float sy = 0;
+		sy += 0.001f;
+		cb.scrolly = sin(sy);
+
 		D3D11_MAPPED_SUBRESOURCE pdata;
 		Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
 		memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// データを値を送る

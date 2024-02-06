@@ -21,6 +21,8 @@ cbuffer gmodel:register(b0)
 	float		shininess;
 	bool		hasTexture;		//テクスチャの有無
 	bool		hasNormalTexture;
+	float		scrollx;
+	float		scrolly;
 };
 
 cbuffer gmodel:register(b1)
@@ -105,26 +107,23 @@ float4 PS(VS_OUT inData) : SV_Target
 	float4 diffuse;
 	float4 ambient;
 
-	// ノーマルマップテクスチャの有無の確認
-	//if (hasNormalTexture)return float4(1, 0, 0, 1);
-	//return float4(0, 0, 0, 1);
-
-
-	/*if (hasNormalTexture)
-		return g_normal_texture.Sample(g_sampler, inData.uv);
-	else*/
-
+	float2 tmpUV = inData.uv;
+	tmpUV.x += scrollx;
+	tmpUV.y += scrolly;
+	
 	if (hasNormalTexture)
 	{
-		//inData.light = normalize(inData.light);
-		float4 tmpNormal = g_normal_texture.Sample(g_sampler, inData.uv) * 2.0f - 1.0f;
+		float4 tmpNormal = g_normal_texture.Sample(g_sampler, tmpUV) * 2.0f - 1.0f;
 		tmpNormal.w = 0;
 		tmpNormal = normalize(tmpNormal);
 
+
 		float4 NL = clamp(dot(tmpNormal, inData.light), 0, 1);
+
 
 		float4 reflection = reflect(-inData.light, tmpNormal);
 		float4 specular = pow(saturate(dot(reflection, inData.Neyev)), shininess) * specularColor;
+
 
 		if (hasTexture != 0){
 			diffuse = g_texture.Sample(g_sampler, inData.uv) * NL;
