@@ -116,12 +116,15 @@ float4 PS(VS_OUT inData) : SV_Target
 		tmpNormal.w = 0;
 		tmpNormal = normalize(tmpNormal);
 
+		// ライトポジションから原点へ向かう方向ベクトルを生成する
+		float4 light = normalize(lightPosition);
+
+		// ワールド座標をかけた頂点とカメラ位置を結んだ視線ベクトル
+
 
 		float4 NL = clamp(dot(tmpNormal, inData.light), 0, 1);
-
 		float4 reflection = reflect(-inData.light, tmpNormal);
 		float4 specular = pow(saturate(dot(reflection, inData.Neyev)), shininess) * specularColor;
-
 
 		if (hasTexture != 0){
 			diffuse = g_texture.Sample(g_sampler, inData.uv) * NL;
@@ -131,12 +134,15 @@ float4 PS(VS_OUT inData) : SV_Target
 			diffuse = diffuseColor * NL;
 			ambient = diffuseColor * ambientColor;
 		}
-		return diffuse + specular + ambient;
+		
+		float4 ret = diffuse + specular + ambient;
+
+		ret.a = (ret.x + ret.y + ret.z)/3;
+		return ret;
 	}
 	else
 	{
 		float4 reflection = reflect(normalize(lightPosition), inData.normal);
-
 		float4 specular = pow(saturate(dot(normalize(reflection), inData.eyev)), shininess) * specularColor;
 		if (hasTexture == 0){
 			diffuse = lightSource * diffuseColor * inData.color;

@@ -13,7 +13,7 @@ namespace Direct3D
 	ID3D11RenderTargetView* pRenderTargetView_;	//レンダーターゲットビュー
 	ID3D11Texture2D* pDepthStencil;				//深度ステンシル
 	ID3D11DepthStencilView* pDepthStencilView;	//深度ステンシルビュー
-
+	ID3D11BlendState* pBlendState_;
 	struct SHADER_BUNDLE
 	{
 		ID3D11VertexShader* pVertexShader_ = nullptr;	//頂点シェーダー
