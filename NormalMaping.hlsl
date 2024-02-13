@@ -120,9 +120,10 @@ float4 PS(VS_OUT inData) : SV_Target
 		float4 light = normalize(lightPosition);
 
 		// ワールド座標をかけた頂点とカメラ位置を結んだ視線ベクトル
-
+		
 
 		float4 NL = clamp(dot(tmpNormal, inData.light), 0, 1);
+		//return NL;
 		float4 reflection = reflect(-inData.light, tmpNormal);
 		float4 specular = pow(saturate(dot(reflection, inData.Neyev)), shininess) * float4(1,1,1,1);
 
