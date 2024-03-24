@@ -125,7 +125,7 @@ float4 PS(VS_OUT inData) : SV_Target
 		float4 NL = clamp(dot(tmpNormal, inData.light), 0, 1);
 		//return NL;
 		float4 reflection = reflect(-inData.light, tmpNormal);
-		float4 specular = pow(saturate(dot(reflection, inData.Neyev)), shininess) * float4(1,1,1,1);
+		float4 specular = pow(saturate(dot(reflection, inData.Neyev)), shininess) * float4(1,1,0.5,1);
 
 		if (hasTexture != 0){
 			diffuse = g_texture.Sample(g_sampler, inData.uv) * NL;
